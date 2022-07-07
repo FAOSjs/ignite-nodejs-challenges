@@ -1,0 +1,19 @@
+{
+  "username": "admin",
+  "password": "r6e5n4t3x10000",
+
+  "name": "default",
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "database": "fin_api",
+  "entities": [
+    "./src/modules/**/entities/*.ts"
+  ],
+  "migrations": [
+    "./src/database/migrations/*.ts"
+  ],
+  "cli": {
+    "migrationsDir": "./src/database/migrations"
+  }
+}
