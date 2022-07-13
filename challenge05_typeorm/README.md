@@ -1,16 +1,29 @@
-TOPICS 
-   1. TypeORM
+🧩 Challenge 04
+<br/>
+---
 
-SubTopics
-   1. Definition
-   2. How it Works
-   3. Usage/Problems that solve
+<br/>
 
-1.1 TypeORM -> Definition
+### 🗣 Talking about the challenge
+Here I learned how to use ORM to improve your work with database.
+
+---
+
+#### 📌 TOPICS:
+      1. TypeORM;
+      
+#### 📌 SUBTOPICS:
+      1. What is it;
+      2. How it Works;
+      3. Usage/Problems that solve.
+      
+---
+
+### 1.1 TypeORM -> Definition
    It's a technique that allow us to manipulate database using object-oriented
    paradigm. ORM stands for "Object Relational Mapping"
 
-1.2 TypeORM -> How it Works
+### 1.2 TypeORM -> How it Works
    - The **Object** part is the one you use with your programming language
    - The **Relational** part is a Relational Database
    Manager System there are other types of 
@@ -19,7 +32,7 @@ SubTopics
    - And finally the **Mapping** part is where you do a bridge between your 
    objects and your tables.
 
-1.3 TypeORM -> Usage/Problems that solve
+### 1.3 TypeORM -> Usage/Problems that solve
    ORM help us with:
    - It fits in your natural way of coding (it's your language!).
    - It abstracts the DB system, so you can change it whenever you want.
