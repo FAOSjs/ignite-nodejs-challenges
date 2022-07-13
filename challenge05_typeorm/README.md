@@ -1,4 +1,4 @@
-🧩 Challenge 04
+🧩 Challenge 05
 <br/>
 ---
 
@@ -19,7 +19,7 @@ Here I learned how to use ORM to improve your work with database.
       
 ---
 
-### 1.1 TypeORM -> Definition
+### 1.1 TypeORM -> What is it
    It's a technique that allow us to manipulate database using object-oriented
    paradigm. ORM stands for "Object Relational Mapping"
 
