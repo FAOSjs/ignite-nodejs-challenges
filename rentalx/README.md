@@ -223,10 +223,12 @@ of modules. In rentalx we use this technique to test the routes.
 ### 1.2 Tests - How it Works
 Unit Test: 
 - Scripts
+
       yarn jest --init
       yarn ts-jest -D
       
 - Changes in jest.config file
+
       //testMatch - where you put your test files path
       //bail - This propertie is used to stop or not when test fail
       testMatch: [pathtotestsfile/*.spec.ts]
@@ -234,9 +236,10 @@ Unit Test:
       bail: true
       
 - Understanding test code
+
       //describe is used to group tests
       describe("CREATING A CATEGORY", () => {
-      
+
          //before each test, it does the D.I, creating an useCase to each test
          beforeEach(() => {
             categoriesRepositoryInMemory = new CategoriesRepositoryInMemory()
@@ -258,12 +261,70 @@ Unit Test:
          })  
          
 Integration Test: 
+- Adding supertest dependency to be able to run a localhost to test
+
+      yarn add supertest @types/supertest
+      
+- Code
+
+      import request from "supertest"
+      import { Connection, createConnection } from "typeorm"
+
+      import { app } from "../../../../shared/infra/expressHttp/app"
+
+      let connection: Connection
+      describe("CREATE CATEGORY CONTROLLER", () => {
+      
+         //before all tests, create connection to test DB and run migrations
+         beforeAll(async () => {
+         
+            connection = await createConnection()
+            await connection.runMigrations()
+
+            const id = uuidv4()
+            const password = await hash("test", 8)
+
+            await connection.query(
+               `INSERT INTO USERS(id, name, username, email, password, "isAdmin", created_at, driver_license)
+                  VALUES('${id}', 'tester', 'test','test@test', '${password}', true, 'now()', 'XXXXXX')
+               `
+            )
+         })
+
+         // after all tests, drop DB and close connection
+         afterAll(async () => {
+            await connection.dropDatabase()
+            await connection.close()
+         })
+
+         it("should be able to create a new category", async () => {
+            const responseToken = await request(app)
+               .post("/sessions")
+               .send({
+                  email: "test@test",
+                  password: "test"
+               })
+
+            const {refresh_token} = responseToken.body
+
+            const response = await request(app)
+               .post("/categories")
+               .send({
+                  name: "SUV",
+                  description: "A sigla SUV significa Sport Utility Vehicle -- ou seja, veículo utilitário esportivo"
+               })
+               .set({
+                  authorization: refresh_token
+               })
+
+            expect(response.status).toBe(201)
+         })
 
 ### 1.3 Tests - Usage/Problems that solve
 Unit: When you test pieces of your code, you have more confidence to make more connections, 
 to progress, and obvious, check if the part of your code is working
 
-Integration:
+Integration: Check if the parts are working well together
 
 ---
 ---
@@ -271,15 +332,18 @@ Integration:
 🔹 CHAPTER V
 <br/>
 ---
-#### 📌 TOPICS
-      1. Email
-      2. More about test (Jest Coverage)
-#### 🎯 SUBTOPICS
-      1. What is it
-      2. How it Works
-      3. Usage/Problems that solve
-
-
+      
+#### 🎇 EXTRA
+      1. Jest Coverage
+      
+### How to use Jest Coverage
+      1. Change the follow properties in jest config file
+            collectCoverage: false --> to --> true
+            collectCoverageFrom: [pathToFilesThatYouWantToCheckIfWasTested]
+            coverageDirectory: "coverage"
+            coverageReporters: ["lcov", "text-summary"]
+      
+      
 ---
 ---
 
@@ -287,8 +351,27 @@ Integration:
 <br/>
 ---
 #### 📌 TOPICS
-      1. AWS (SES, S3 and EC2)
+      1. S3
+      2. SES
+      3. EC2
 #### 🎯 SUBTOPICS
       1. What is it
       2. How it Works
-      3. Usage/Problems that solve
+      
+### 1.1 S3 - What is it
+"Amazon Simple Storage Service (Amazon S3) is an object storage service that offers industry-leading scalability, 
+data availability, security, and performance." It is mostly used to store application files in the CLOUD.
+
+### 1.2 S3 - How it Works
+![product-page-diagram_Amazon-S3_HIW cf4c2bd7aa02f1fe77be8aa120393993e08ac86d](https://user-images.githubusercontent.com/107777870/180307344-56386267-51c8-4e10-84e0-6e719c1c1593.png)
+
+
+WHAT I DO TO SETUP S3 IN THIS PROJECT
+- Create a IAM User (copy two keys) with S3 FULL ACCESS PERMISSION
+- Create the bucket
+- Put the enviroment variables on the .env file to sdk recognize your account
+- install the SDK and hands on
+
+
+
+
