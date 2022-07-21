@@ -217,8 +217,48 @@ Unit Test: It's a technique to test parts/pieces of your code.
 It's when you check if the piece (function, class, etc), works as it 
 should. And this happen when you run your app piece isolated
 
-Integration Test: 
+Integration Test: This technique happen, usually, after unit test, because here is tested a combination
+of modules. In rentalx we use this technique to test the routes.
+
 ### 1.2 Tests - How it Works
+Unit Test: 
+- Scripts
+      yarn jest --init
+      yarn ts-jest -D
+      
+- Changes in jest.config file
+      //testMatch - where you put your test files path
+      //bail - This propertie is used to stop or not when test fail
+      testMatch: [pathtotestsfile/*.spec.ts]
+      
+      bail: true
+      
+- Understanding test code
+      //describe is used to group tests
+      describe("CREATING A CATEGORY", () => {
+      
+         //before each test, it does the D.I, creating an useCase to each test
+         beforeEach(() => {
+            categoriesRepositoryInMemory = new CategoriesRepositoryInMemory()
+            createCategoryUseCase = new CreateCategoryUseCase(categoriesRepositoryInMemory)
+         })
+
+         //it is where you put your test logic
+         it("[CreateCategoryUseCase] - should be able to create a new category", async () => {
+            const category = {
+               name: "Category name test",
+               description: "Category created only to test the func"
+            }
+
+            await createCategoryUseCase.execute(category)
+
+            const categoryCreated = await categoriesRepositoryInMemory.findByName(category.name)
+
+            expect(categoryCreated).toHaveProperty("id")
+         })  
+         
+Integration Test: 
+
 ### 1.3 Tests - Usage/Problems that solve
 Unit: When you test pieces of your code, you have more confidence to make more connections, 
 to progress, and obvious, check if the part of your code is working
