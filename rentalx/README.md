@@ -117,6 +117,88 @@ Here Singleton was used to prevent that the repositories has more than one singl
       3. Usage/Problems that solve
 
 
+### 1.1 D.I and TSyringe - What is it
+Dependency Injection is nothing more than a technique used so that a function or objects receives(through injection)
+other objects or functions that it uses/depends on. TSyringe is a tool that facilitates it to us. TSyringe is a 
+dependency injection CONTAINER, ie, it automates the process managing objects (instanciation/creating and injection).
+
+### 1.2 D.I and TSyringe - How it Works
+
+There are four "players" in D.I: 
+- The service/isolated functionality that you want to use/inject in some class/function;
+- The client/main class that uses/receive through the injection the service;
+- The injector which creates a service instance and injects it into the client;
+- And in some cases, we have the interface that’s used by the client and implemented by the service.
+
+Let's understand using the rentalx code:
+- Controllers is a injector, because it import the service and call the TSyringe to instanciates and injects
+the service into the client;
+
+      const authenticateUserUseCase = container.resolve(AuthenticateUserUseCase)
+      const authenticateInfos = await authenticateUserUseCase.execute({ email, password })
+- useCases is a client, it uses/receive through the injection the service and depends on service interface.
+            @injectable()
+            class AuthenticateUserUseCase{
+               constructor(
+                  @inject("UsersRepository")
+                  private usersRepository: IUsersRepository,
+     
+- Repositories and Providers is service/isolated functionality. It also implements its interface.
+
+      container.registerSingleton<IUsersRepository>(
+         "UsersRepository",
+         UsersRepository
+      )
+
+Now let's understand how TSyringe works? TSyringe help us with the D.I lifecycle:
+- Register: It's basically the first process that happen in D.I lifecycle. Where you tell
+to container to mapping the services and its types, to when you need to instanciate some service,
+it, TSyringe, knows which instanciates.
+
+      //Hey, container! Register a singleton to such type
+      container.registerSingleton<IUsersRepository>(
+         "UsersRepository",
+         UsersRepository
+      )
+- Resolve: It's when the container creates and injects the dependencies to the client, resolving it.
+
+      const authenticateUserUseCase = container.resolve(AuthenticateUserUseCase)
+- And too it has the part of managing of the dependent objects.
+
+      @injectable()
+      class AuthenticateUserUseCase{
+         constructor(
+            @inject("UsersRepository")
+            private usersRepository: IUsersRepository,
+      
+### 1.3 D.I and TSyringe - Usage/problems that solve
+
+D.I. help us with *coupling*, because this technique is based on single responsibility principle
+and you can also use the dependency inversion principle
+
+---
+
+### 1.1 JWT - What is it 
+Json Web Tokens are credentials that carries with it some resources, so we can use it to 
+authentication and Authorization
+
+### 1.2 JWT - How it Works
+- Creating token:
+
+      const token = sign({}, SECRET_TOKEN, {
+         subject: PAYLOAD,
+         expiresIn: "3d",
+      })
+- Verifying token:
+
+      const { sub: PAYLOAD } = verify(
+         REQUEST_TOKEN, 
+         SECRET_TOKEN
+      )
+
+### 1.3 JWT - Usage/Problems that Solve
+JWTs helps us carrying information in a security way to be used in authentication or authorization
+
 ---
 ---
 
@@ -124,12 +206,24 @@ Here Singleton was used to prevent that the repositories has more than one singl
 <br/>
 ---
 #### 📌 TOPICS
-      1. Test (Unit and Integration)
+      1. Tests (Unit and Integration)
 #### 🎯 SUBTOPICS
       1. What is it
       2. How it Works
       3. Usage/Problems that solve
 
+### 1.1 Tests - What is it
+Unit Test: It's a technique to test parts/pieces of your code. 
+It's when you check if the piece (function, class, etc), works as it 
+should. And this happen when you run your app piece isolated
+
+Integration Test: 
+### 1.2 Tests - How it Works
+### 1.3 Tests - Usage/Problems that solve
+Unit: When you test pieces of your code, you have more confidence to make more connections, 
+to progress, and obvious, check if the part of your code is working
+
+Integration:
 
 ---
 ---
