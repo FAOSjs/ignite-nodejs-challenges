@@ -358,20 +358,102 @@ Integration: Check if the parts are working well together
       1. What is it
       2. How it Works
       
+#### 🎇 EXTRA
+      1. CI/CD
+      
 ### 1.1 S3 - What is it
-"Amazon Simple Storage Service (Amazon S3) is an object storage service that offers industry-leading scalability, 
+Amazon Simple Storage Service (Amazon S3) is an object storage service that offers industry-leading scalability, 
 data availability, security, and performance." It is mostly used to store application files in the CLOUD.
 
 ### 1.2 S3 - How it Works
 ![product-page-diagram_Amazon-S3_HIW cf4c2bd7aa02f1fe77be8aa120393993e08ac86d](https://user-images.githubusercontent.com/107777870/180307344-56386267-51c8-4e10-84e0-6e719c1c1593.png)
 
+As you can see, S3 doesnt have a hard structure to understand, now, let's go understand the main players:
+- Bucket - It's looks like a folder. It used to store files or metadata of the files. Every Bucket has a name and AWS region
+- Object - It's a file or a metadata as I said before, yes, it's named as a object. All objects, stored in a container, 
+has a URL, like that: https://EXAMPLE-BUCKET-NAME.s3.REGION.amazonaws.com/PATH-TO-FILE
+- Keys - It's a object identifier likes a path.
+- Region - It's where(geographically speaking) your bucket is stored.
+- Access control lists (ACLs) - It's a way to manage permission to your buckets and/or objects
 
-WHAT I DO TO SETUP S3 IN THIS PROJECT
+
+
+WHAT I DID TO SETUP S3 IN THIS PROJECT
 - Create a IAM User (copy two keys) with S3 FULL ACCESS PERMISSION
 - Create the bucket
 - Put the enviroment variables on the .env file to sdk recognize your account
 - install the SDK and hands on
 
+### 2.1 SES - What is it
+Amazon Simple Email Service (Amazon SES) is a simple way to send email using your email address or domain.
+
+### 2.2 SES - How it Works
+
+![arch_overview-diagram](https://user-images.githubusercontent.com/107777870/181379630-69ffa3be-962d-4203-a5d9-0728645632cb.png)
+
+1. A client application, acting as an email sender, makes a request to Amazon SES to send email to one or more recipients.
+2. If the request is valid, Amazon SES accepts the email.
+3. Amazon SES sends the message over the Internet to the recipient's receiver. Once the message is passed to Amazon SES, it is usually sent immediately, with the first delivery attempt normally occurring within milliseconds.
+4. At this point, there are different possibilities. For example:
+    1. The ISP successfully delivers the message to the recipient's inbox.
+    2. The recipient's email address does not exist, so the ISP sends a bounce notification to Amazon SES. Amazon SES then forwards the notification to the sender.
+    3. The recipient receives the message but considers it to be spam and registers a complaint with the ISP. The ISP, which has a feedback loop set up with Amazon SES, sends the complaint to Amazon SES, which then forwards it to the sender.
+
+After a sender sends an email request to Amazon SES, there are two situation:
+- Successful situation: You receive an message ID to identify your email and your email is send over the internet using SMTP.
+- Failed situation: If you are using an AWS SDK for a programming language that uses exceptions, the call to Amazon SES will throw a *MessageRejectedException*. (The name of the exception may vary slightly depending on the SDK.)
+
+WHAT I DID TO SETUP SES IN THIS PROJECT
+- You need to have a domain and an email
+- Verify domain and email in the amazon SES console
+- Click on the verified domain and catch the keys and put on the
+domain console (google domains)
+- Add a SES permission to your IAM user
+
+### 3.1 EC2 - What is it
+Amazon Elastic Compute Cloud (Amazon EC2) provides scalable computing capacity in the Amazon Web Services (AWS) Cloud. 
 
 
-
+WHAT I DID TO SETUP EC2 IN THIS PROJECT
+- Create the instance and download the keys that allow you to use your instance
+- open your client ssh following the aws steps
+- Config your Ubuntu instance, like that:
+    - **SUDO ADDUSER [USERNAME]**
+    creating an user in ubuntu instance to isolate your application from others process. USERNAME=app
+    - **SUDO USERMOD -aG SUDO [USERNAME]**
+    giving sudo permission to app
+    - **SUDO SU - [USERNAME]**
+    opening app in sudo mode
+    - **MKDIR .SSH**
+    creating a folder to put SSH keys
+    - **CHMODE 700 .SSH**
+    - **CREATE AUTHORIZED KEY FILE AND PASTE THE SSH KEY FROM YOUR LOCALMACHINE**
+    this SSH process is used to allow the access through the user
+    - **UPDATE YOUR INSTANCE**
+    sudo apt update
+    - **INSTALL THE DEPENDENCIES**
+    docker, node, yarn, etc
+- Install babel dependencies(babel's presets and plugins) and config it (babel config file)
+- Create your build script
+- **SUDO GRUPADD DOCKER**
+- **SUDO USERMODE -aG DOCKER $USER**
+    to give permission to docker and your user to use it
+    
+### UNDERSTAND CI/CD PROCESS
+- First we need to clone the application (here I did that using github)
+      - I created a ssh key and put it in GitHub to allow the instance to manage the repository
+      - To finish I cloned the repository to my instance
+      - I installed dependencies using yarn
+- Creating GitHub Actions
+      - Create SSH key in your machine and paste (the .pub key file) in ssh file created at ubuntu instance
+      - Create four secrets keys (host, key, user, port) in the repository settings
+      - Create a action by your self
+- Proxy Reverso
+      - Install nginx
+      - Config your file and create a simbolic link
+- Domain and SSL
+      - Create a public hosted zone using AWS Route 53
+      - Accessing your hosted zone, you need to create a register
+      - Config your domain DNS adding a new resource to your register
+      - Get your SSL certificate using certbot tool
+ 
